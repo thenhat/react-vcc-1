@@ -1,0 +1,53 @@
+.todo-wrapper {
+	padding: 10px;
+
+	.todo-input {
+		margin-bottom: 20px;
+	}
+
+	.todo-list {
+		table{
+			width: 100%;
+			text-align: center;
+			border-collapse: collapse;
+			th,td{
+				border: 1px solid #999999;
+				padding: 5px;
+				.fa{
+					padding-right: 5px;
+					color: #ffffff;
+				}
+			}
+		}
+		.todo-item {
+			padding: 20px 10px;
+			border-top: 1px solid #ddd;
+			align-items: center;
+
+			&:hover {
+				background-color: #fafafa;
+			}
+
+			p {
+				flex: 1;
+				font-size: 20px;
+				color: #333;
+			}
+
+			i {
+				cursor: pointer;
+				color: #666;
+
+				&:hover {
+					color: $colorDanger;
+				}
+			}
+		}
+		.dialog-main{
+			padding: 20px;
+			.ui-input{
+				margin-bottom: 10px;
+			}
+		}
+	}
+}

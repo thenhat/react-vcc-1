@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>TEST SAMPLE</title>
+
+	<link rel="stylesheet" href="css/style.css">
+	<script src="http://mic6.cnnd.vn/statics/libs/jquery-2.0.3.min.js"></script>
+
+	<script src="http://127.0.0.1:1200/dist/ims-widget-sample.js"></script>
+</head>
+
+<body>
+	<div class="test-block" id="function-manager">
+		<h3 class="test-title">TODOS</h3>
+		
+		<div id="todo" style="background: #fff;width: 100%;"></div>
+	</div>
+	
+	<script>
+		var username = 'admin';
+
+		var urlToken = 'http://mic6.cnnd.vn/get-access-token/royalty_v2';
+
+		var namespace = 'imsk14.channelvn.net';
+		var password = 'lttrxlwc';
+		
+		var getTokenFunction = function(callback) {
+			$.ajax({
+                type: 'POST',
+                url: urlToken,
+                data: {
+                    "channel_code": namespace,
+                    "secure_password": password
+                },
+                dataType: "json",
+                success: function (res) {
+                    if (typeof (res) === 'string') res = JSON.parse(res);
+                    var data = res.message;
+
+                    if (typeof (data) === 'string') data = JSON.parse(data);
+                    callback(data.token);
+                }
+            });
+		}
+
+		$(function() {
+			IMSWidgets.init({
+				locale: 'vi',
+				plugins: {
+					name: 'sample',
+					options: {
+						namespace: namespace,
+						username: username,
+						getTokenFunction: getTokenFunction
+					},
+					methods: {
+						name: 'todo',
+						options: {
+							placeholder: '#todo'
+						}
+					}
+				}
+			});
+		});
+	</script>
+</body>
+</html>
