@@ -16,5 +16,8 @@
   "license": "ISC",
   "devDependencies": {
     "coreplugin": "git+http://gitlab+deploy-token-2:BKt5AWQkXTaYV8F14Ptv@a19.cnnd.vn/IMSPlugins/IMSPluginCore#quangnguyenmanh"
+  },
+  "dependencies": {
+    "evergreen-ui": "^4.18.1"
   }
 }

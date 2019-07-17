@@ -8,13 +8,10 @@ import {Input} from '@core/ui/input';
 import {FontAwesome} from '@core/ui/icons';
 import {Button} from "@core/ui/button";
 import {Dialog, renderDialog} from '@core/ui/dialog';
-import SelectBox from "coreplugin/core/ui/selectbox";
-import Paging from "coreplugin/core/ui/paging/PagingSimple";
-import Checkbox from "coreplugin/core/ui/checkbox";
-import ButtonColor from "coreplugin/core/ui/color-picker/ButtonColor";
-import Drawer from "coreplugin/core/ui/drawer";
-import DropList from "coreplugin/core/ui/droplist";
-import {Radio, RadioGroup} from "coreplugin/core/ui/radio";
+import Paging from "@core/ui/paging/PagingSimple";
+
+import {Pane,Radio,Select} from "evergreen-ui";
+
 
 @inject('store')
 @observer
@@ -25,10 +22,10 @@ class Main extends Component {
             Id: 0,
             Name: '',
             Age: null,
-            Gtinh: '',
+            Gtinh: 'Male',
             Email: '',
-            Status: '',
-            editId: null,
+            Status:'Active',
+            cheked:false,
             dialogVisible: false
         };
 
@@ -51,9 +48,10 @@ class Main extends Component {
 
     showPopupEdit = (id) => {
         const {store} = this.props;
-        let detail = store.getTodoDetail(id);
+        var detail = store.getTodoDetail(id);
         var that =this;
         detail.then(function(p) {
+            console.log(p);
             that.setState({
                 dialogVisible: true,
                 Name: p.name,
@@ -64,27 +62,27 @@ class Main extends Component {
                 Id: p.id
             });
         });
+    };
 
-
-    }
     updateTodo = (data) => {
         const {store} = this.props;
         store.updateTodo(data)
-    }
+    };
 
     removeTodo = (id) => {
         const {store} = this.props;
         store.removeTodo(id)
-    }
+    };
 
 
     render() {
         const {store} = this.props;
-        const {input, editId, editValue} = this.state;
+        const {input} = this.state;
 
         return (
             <div styleName="todo-wrapper">
                 <div styleName="todo-input">
+
                     <Button
                         style={'default'}
                         height={40}
@@ -94,14 +92,12 @@ class Main extends Component {
                         onClick={() => {
                             this.setState({
                                 dialogVisible: true,
-                                editId: 2000
                             })
                         }}
-
                     ><FontAwesome
                         icon="fa fa-plus"
                     />
-                        <p>Them cong viec</p></Button>
+                        <p>Thêm công việc</p></Button>
 
                     <Input
                         value={input}
@@ -109,25 +105,11 @@ class Main extends Component {
                         onChange={(val) => this.setState({input: val})}
                         onEnter={this.addTodo}
                     />
-                    <ButtonColor />
-                    <Radio checked={true} value={1} groupId={'test'} children={'Nam'}/>
-                    <Radio value={2} groupId={'test'} children={'Nu'}/>
-                    <RadioGroup/>
-                    <SelectBox data={['test','abc']}/>
 
-
-                    {/*<SelectBox*/}
-                    {/*    width={150}*/}
-                    {/*    height={30}*/}
-                    {/*    dropWidth={150}*/}
-                    {/*    dropHeight={300}*/}
-                    {/*    placeholder={'Chọn giá trị'}*/}
-                    {/*    value={null}*/}
-                    {/*    emptyText={['An']}*/}
-                    {/*    ignoreValues={['nhat', 'nhi']}*/}
-                    {/*    disableValues={['nhat', 'nhi']}*/}
-
-                    {/*/>*/}
+                    {/*<ButtonColor />*/}
+                    {/*<Radio checked={true} value={1} groupId={'test'} children={'Nam'}/>*/}
+                    {/*<Radio value={2} groupId={'test'} children={'Nu'}/>*/}
+                    {/*<RadioGroup/>*/}
                 </div>
 
                 <div styleName="todo-list">
@@ -177,12 +159,12 @@ class Main extends Component {
                         }
                         </tbody>
                     </table>
+
                     {/*
                     Total => Tổng số dòng
-
                     */}
-
                     <Paging total={store.listTodo.length} page={1} size={5} />
+
                     <Dialog
                         visible={this.state.dialogVisible}
                         onClose={() => {
@@ -206,14 +188,14 @@ class Main extends Component {
                                 placeholder={'Add Age...'}
                                 onChange={(val) => this.setState({Age: val})}
                             />
-                            <label><strong>Gioi Tinh</strong></label>
-                            <Input
-                                value={this.state.Gtinh}
-                                height={40}
-                                placeholder={'Add Gtinh...'}
-                                onChange={(val) => this.setState({Gtinh: val})}
+                            <label><strong>Render</strong></label>
+                            <Pane aria-label="Radio Group Label 12" role="group" onClick={(t) => this.setState({Gtinh: t.target.value})} value={this.state.Gtinh}>
 
-                            />
+                                <Radio name="group" label="Male" value="Male"/>
+                                <Radio name="group" label="Female" value="Female"/>
+                                <Radio name="group" label="Other" value="Other"/>
+                            </Pane>
+
                             <label><strong>Email</strong></label>
                             <Input
                                 value={this.state.Email}
@@ -223,17 +205,11 @@ class Main extends Component {
 
                             />
                             <label><strong>Status</strong></label>
-                            <Input
-                                value={this.state.Status}
-                                height={40}
-                                placeholder={'Add Status...'}
-                                onChange={(val) => this.setState({Status: val})}
+                            <Select width={240} onChange={(t) => this.setState({Status: t.target.value})} value={this.state.Status}>
+                                <option value="Active" selected>Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </Select>
 
-                            />
-                            <Checkbox
-                                label={'Trang Thai'}
-                                checked={false}
-                            />
                             <Button
                                 width={70}
                                 height={40}

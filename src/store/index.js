@@ -15,57 +15,57 @@ class SampleStore extends Store {
             id: 1,
             name: 'Nguyen The Nhat',
             age: 24,
-            gtinh: 'Nam',
+            gtinh: 'Male',
             email: 'thenhat@gmail',
-            status: 'active'
+            status: 'Active'
 
         }, {
             id: 2,
             name: 'Nguyen The Quyen',
             age: 22,
-            gtinh: 'Nam',
+            gtinh: 'Male',
             email: 'thequyen@gmail',
-            status: 'active'
+            status: 'Inactive'
 
         }, {
             id: 3,
-            name: 'Nguyen Van Nam',
+            name: 'Nguyen Hoang Nhi',
             age: 21,
-            gtinh: 'Nam',
+            gtinh: 'Female',
             email: 'vannam@gmail',
-            status: 'active'
+            status: 'Active'
 
         }, {
             id: 4,
-            name: 'Nguyen The Quyen',
+            name: 'Nguyen The Khai',
             age: 22,
-            gtinh: 'Nam',
+            gtinh: 'Male',
             email: 'thequyen@gmail',
-            status: 'active'
+            status: 'Active'
 
         }, {
             id: 5,
-            name: 'Nguyen Van Nam',
+            name: 'Nguyen Thi Ha',
             age: 21,
-            gtinh: 'Nam',
+            gtinh: 'Female',
             email: 'vannam@gmail',
-            status: 'active'
+            status: 'Inactive'
 
         }, {
             id: 6,
-            name: 'Nguyen The Quyen',
+            name: 'Nguyen Thi Chinh',
             age: 22,
-            gtinh: 'Nam',
+            gtinh: 'Female',
             email: 'thequyen@gmail',
-            status: 'active'
+            status: 'Inactive'
 
         }, {
             id: 7,
-            name: 'Nguyen Van Nam',
+            name: 'Nguyen Van Thinh',
             age: 21,
-            gtinh: 'Nam',
+            gtinh: 'Other',
             email: 'vannam@gmail',
-            status: 'active'
+            status: 'Active'
 
         }
     ]
