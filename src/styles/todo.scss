@@ -43,11 +43,37 @@
 				}
 			}
 		}
-		.dialog-main{
-			padding: 20px;
-			.ui-input{
-				margin-bottom: 10px;
+		.dialog-container{
+			height: auto !important;
+			top:200px !important;
+			.dialog-main{
+				padding: 20px;
+				.ui-input,.selectbox-input{
+					margin-bottom: 15px;
+					height: 40px;
+				}
+				label{
+					display: block;
+					padding-bottom: 3px;
+				}
+				.error{
+					font-weight: bold;
+					font-size: 13px;
+					color: red;
+				}
+				.ui-radio{
+					display: flex;
+					float: left;
+					padding: 10px 20px 10px 0;
+					span{
+						font-weight: inherit;
+					}
+				}
 			}
 		}
+		.clear{
+			clear: both;
+		}
+
 	}
 }

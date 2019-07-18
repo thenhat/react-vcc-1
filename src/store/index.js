@@ -16,7 +16,7 @@ class SampleStore extends Store {
             name: 'Nguyen The Nhat',
             age: 24,
             gtinh: 'Male',
-            email: 'thenhat@gmail',
+            email: 'thenhat@gmail.com',
             status: 'Active'
 
         }, {
@@ -24,7 +24,7 @@ class SampleStore extends Store {
             name: 'Nguyen The Quyen',
             age: 22,
             gtinh: 'Male',
-            email: 'thequyen@gmail',
+            email: 'thequyen@gmail.com',
             status: 'Inactive'
 
         }, {
@@ -32,7 +32,7 @@ class SampleStore extends Store {
             name: 'Nguyen Hoang Nhi',
             age: 21,
             gtinh: 'Female',
-            email: 'vannam@gmail',
+            email: 'vannam@gmail.com',
             status: 'Active'
 
         }, {
@@ -40,7 +40,7 @@ class SampleStore extends Store {
             name: 'Nguyen The Khai',
             age: 22,
             gtinh: 'Male',
-            email: 'thequyen@gmail',
+            email: 'thequyen@gmail.com',
             status: 'Active'
 
         }, {
@@ -48,7 +48,7 @@ class SampleStore extends Store {
             name: 'Nguyen Thi Ha',
             age: 21,
             gtinh: 'Female',
-            email: 'vannam@gmail',
+            email: 'vannam@gmail.com',
             status: 'Inactive'
 
         }, {
@@ -56,7 +56,7 @@ class SampleStore extends Store {
             name: 'Nguyen Thi Chinh',
             age: 22,
             gtinh: 'Female',
-            email: 'thequyen@gmail',
+            email: 'thequyen@gmail.com',
             status: 'Inactive'
 
         }, {
@@ -64,7 +64,7 @@ class SampleStore extends Store {
             name: 'Nguyen Van Thinh',
             age: 21,
             gtinh: 'Other',
-            email: 'vannam@gmail',
+            email: 'vannam@gmail.com',
             status: 'Active'
 
         }
@@ -87,29 +87,14 @@ class SampleStore extends Store {
             }
             else{
                 const todo = this.listTodo.find(t => t.id == opts.Id);
-                console.log(todo);
                 todo.name = opts.Name;
                 todo.age = opts.Age;
                 todo.gtinh = opts.Gtinh;
                 todo.email = opts.Email;
                 todo.status = opts.Status;
-                console.log(todo);
                 resolve(todo.id);
             }
         });
-    }
-
-    @action updateTodo(data = {}) {
-        return new Promise((resolve) => {
-            const todo = this.listTodo.find(t => t.id == data.id);
-            todo.name = data.name;
-            todo.age = data.age;
-            todo.gtinh = data.gtinh;
-            todo.email = data.email;
-            todo.status = data.status;
-
-            resolve('Done');
-        })
     }
 
     @action getTodoDetail(id) {
