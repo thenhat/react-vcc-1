@@ -15,6 +15,8 @@ import ButtonColor from "coreplugin/core/ui/color-picker/ButtonColor";
 import Drawer from "coreplugin/core/ui/drawer";
 import DropList from "coreplugin/core/ui/droplist";
 import {Radio, RadioGroup} from "coreplugin/core/ui/radio";
+import validator from "coreplugin/core/ui/checkbox";
+import {isEmpty, isBoolean, isNumber, isRegExp} from 'coreplugin/core/utils/validator';
 
 @inject('store')
 @observer
@@ -28,8 +30,9 @@ class Main extends Component {
             Gtinh: '',
             Email: '',
             Status: '',
-            editId: null,
-            dialogVisible: false
+            dialogVisible: false,
+            isValidate:true,
+            errors: {}
         };
 
     }
@@ -37,7 +40,10 @@ class Main extends Component {
     addTodo = () => {
         const {store} = this.props;
         const {Name, Age, Gtinh, Email, Status, Id} = this.state;
-        console.log(this.state);
+        if(!this.handleValidation())
+        {
+            return;
+        }
 
         store.addTodo({
             Name,
@@ -75,6 +81,45 @@ class Main extends Component {
     removeTodo = (id) => {
         const {store} = this.props;
         store.removeTodo(id)
+    }
+
+    handleValidation = () =>{
+        let errors = {};
+        let isValidated = true;
+        if(isEmpty(this.state.Name))
+        {
+            errors["Name"] = "Cannot be empty";
+        }
+
+        if(isEmpty(this.state.Age))
+        {
+            errors["Age"] = "Cannot be empty";
+        }
+        else if(isNaN(this.state.Age))
+        {
+            errors["Age"] = "Please input number";
+        }
+
+        if(isEmpty(this.state.Email))
+        {
+            errors["Email"] = "Cannot be empty";
+        }
+        /*else if (!(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(this.state.Email)))
+        {
+            errors["Email"] = "Email invalid";
+        }*/
+        else if(!this.state.Email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i))
+        {
+            errors["Email"] = "Email invalid";
+        }
+
+        if(!isEmpty(errors))
+        {
+            isValidated = false;
+        }
+
+        this.setState({errors: errors});
+        return isValidated;
     }
 
 
@@ -197,6 +242,7 @@ class Main extends Component {
                                 placeholder={'Add Name...'}
                                 onChange={(val) => this.setState({Name: val})}
                             />
+                            <span className="error">{this.state.errors["Name"]}</span>
                             <input type="hidden" value={this.state.Id} />
 
                             <label><strong>Age</strong></label>
@@ -206,6 +252,7 @@ class Main extends Component {
                                 placeholder={'Add Age...'}
                                 onChange={(val) => this.setState({Age: val})}
                             />
+                            <span className="error">{this.state.errors["Age"]}</span>
                             <label><strong>Gioi Tinh</strong></label>
                             <Input
                                 value={this.state.Gtinh}
@@ -222,6 +269,7 @@ class Main extends Component {
                                 onChange={(val) => this.setState({Email: val})}
 
                             />
+                            <span className="error">{this.state.errors["Email"]}</span>
                             <label><strong>Status</strong></label>
                             <Input
                                 value={this.state.Status}
@@ -230,6 +278,7 @@ class Main extends Component {
                                 onChange={(val) => this.setState({Status: val})}
 
                             />
+
                             <Checkbox
                                 label={'Trang Thai'}
                                 checked={false}
