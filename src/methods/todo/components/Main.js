@@ -126,6 +126,43 @@ class Main extends Component {
 
     };
 
+    getValid =(e)=> {
+        let errors = {};
+        let isValidated = true;
+        var fieldName =e;
+
+        switch (fieldName) {
+            case "Name":
+                if (isEmpty(this.state.Name)) {
+                    errors["Name"] = "Cannot be empty";
+                }
+                break;
+
+            case "Age":
+                if (isEmpty(this.state.Age)) {
+                    errors["Age"] = "Cannot be empty";
+                } else if (isNaN(this.state.Age)) {
+                    errors["Age"] = "Please input number";
+                }
+                break;
+
+            case "Email":
+                if (isEmpty(this.state.Email)) {
+                    errors["Email"] = "Cannot be empty";
+                } else if (!this.state.Email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
+                    errors["Email"] = "Email invalid";
+                }
+                break;
+            default:
+                break;
+        }
+        if (!isEmpty(errors)) {
+            isValidated = false;
+        }
+
+        this.setState({errors: errors});
+    };
+
     render() {
         const {store} = this.props;
 
@@ -206,7 +243,18 @@ class Main extends Component {
                     <Dialog
                         visible={this.state.dialogVisible}
                         onClose={() => {
-                            this.setState({dialogVisible: false})
+                            this.setState({
+                                Id: 0,
+                                Name: '',
+                                Age: null,
+                                Gtinh: '',
+                                Email: '',
+                                isValidate: true,
+                                errors: {},
+                                Status: '',
+                                isChecked1: false,
+                                isChecked2: false,
+                                dialogVisible: false})
                         }}>
 
                         <div>
@@ -215,7 +263,8 @@ class Main extends Component {
                                 value={this.state.Name}
                                 height={40}
                                 placeholder={'Add Name...'}
-                                onChange={(val) => this.setState({Name: val})}
+                                onChange={(value) => this.setState({Name: value},
+                                    () => this.getValid('Name'))}
                             />
                             <span styleName="error">{this.state.errors["Name"]}</span>
                             <input type="hidden" value={this.state.Id}/>
@@ -225,7 +274,8 @@ class Main extends Component {
                                 value={this.state.Age}
                                 height={40}
                                 placeholder={'Add Age...'}
-                                onChange={(val) => this.setState({Age: val})}
+                                onChange={(value) => this.setState({Age: value},
+                                    () => this.getValid('Age'))}
                             />
                             <span styleName="error">{this.state.errors["Age"]}</span>
 
@@ -250,7 +300,8 @@ class Main extends Component {
                                 value={this.state.Email}
                                 height={40}
                                 placeholder={'Add email...'}
-                                onChange={(val) => this.setState({Email: val})}
+                                onChange={(value) => this.setState({Email: value},
+                                    () => this.getValid('Email'))}
 
                             />
                             <span styleName="error">{this.state.errors["Email"]}</span>
@@ -260,13 +311,13 @@ class Main extends Component {
                                 checked={this.state.isChecked1}
                                 value={'Active'}
                                 onChange={(value) => this.setState({Status: value},
-                                    () => this.getChecked())}>
+                                    () => this.getChecked(),()=>this.getValid('Status'))}>
                                 Active</Radio>
                             <Radio
                                 checked={this.state.isChecked2}
                                 value={'Inactive'}
                                 onChange={(value) => this.setState({Status: value},
-                                    () => this.getChecked())}>
+                                    () => this.getChecked(),()=>this.getValid('Status'))}>
                                 Inactive
                             </Radio>
 
