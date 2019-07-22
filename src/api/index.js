@@ -5,7 +5,13 @@ class SampleAPI extends API {
 	constructor(props) {
 		super(props);
 
-		this._username = props.username;
+		this.gorestInstace = this.create(config.api.gorest);
+	}
+	getUsers() {
+		return this.gorestInstace.get('/users', {
+			_format: 'json',
+			'access-token': 'OZLjSzXZ3IWDaFe2rLWUB0hYwRVJ_9FsZWo1'
+		});
 	}
 }
 

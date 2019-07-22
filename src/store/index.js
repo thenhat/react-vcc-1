@@ -1,14 +1,26 @@
 import Store from '@core/model/store';
 import {action, observable} from '@core/common/mobx';
 import uuid from '@core/common/uuid';
+import API from '../api';
 
+const apiCache = {};
 
 class SampleStore extends Store {
     constructor(props) {
         super(props);
 
+        const { namespace, username, getTokenFunction } = props;
 
+        if (!apiCache[namespace]) {
+            apiCache[namespace] = new API({
+                getTokenFunction,
+                username
+            });
+        }
+
+        this.api = apiCache[namespace];
     }
+
 
     @observable listTodo = [
         {
@@ -623,6 +635,21 @@ class SampleStore extends Store {
             }
             resolve('Done')
         })
+    }
+    @action
+    getUsers() {
+        return new Promise((resolve, reject) => {
+
+            this.api.getUsers()
+                .then(data => {
+
+                    resolve(data);
+
+                })
+                .catch(err => {
+                    reject(err);
+                })
+        });
     }
 }
 

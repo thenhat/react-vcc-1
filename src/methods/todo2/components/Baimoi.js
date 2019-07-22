@@ -36,6 +36,14 @@ class Baimoi extends Component {
 
     }
 
+    componentWillMount() {
+        const { store } = this.props;
+
+        store.getUsers();
+        var ff=store.getUsers;
+        console.log(ff)
+    }
+
     addTodo = () => {
         const {store} = this.props;
         const {First_name, Last_name, Gender, Phone, Email, Status, Id} = this.state;
@@ -188,9 +196,7 @@ class Baimoi extends Component {
                         bgColor={'#2c8d3a'}
                         textColor={'#fff'}
                         onClick={() => {
-                            this.setState({
-                                dialogVisible: true,
-                            })
+                            this.componentWillMount()
                         }}>
                         <p>New User</p>
                     </Button>
@@ -207,7 +213,7 @@ class Baimoi extends Component {
                             <th styleName="color-text">Email</th>
                             <th styleName="color-text">Phone</th>
                             <th styleName="color-text">Status</th>
-                            <th>Action</th>
+                            <th styleName="color-text">Action</th>
                         </tr>
                         </thead>
                         <tbody>
