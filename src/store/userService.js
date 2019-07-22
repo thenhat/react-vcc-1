@@ -1,38 +1,39 @@
 import Store from '@core/model/store';
 import {action, observable} from '@core/common/mobx';
 import uuid from '@core/common/uuid';
-import axios from 'axios'
 
 
-class SampleStore extends Store {
+class UserService extends Store {
     constructor(props) {
         super(props);
+
+
     }
 
-
-    @observable listTodo = [{
-        "id": "1",
-        "first_name": "Ewald",
-        "last_name": "Bashirian",
-        "gender": "male",
-        "dob": "2011-05-26",
-        "email": "oda45@example.org",
-        "phone": "+1 (371) 296-0299",
-        "website": "http://www.satterfield.org/numquam-sit-reiciendis-illum-odit-quas-optio",
-        "address": "6572 Marc Mills Suite 607\nBethbury, ND 09590",
-        "status": "inactive",
-        "_links": {
-            "self": {
-                "href": "https://gorest.co.in/public-api/users/1"
-            },
-            "edit": {
-                "href": "https://gorest.co.in/public-api/users/1"
-            },
-            "avatar": {
-                "href": "https://lorempixel.com/250/250/people/?72063"
+    @observable listData = [
+        {
+            "id": "1",
+            "first_name": "Ewald",
+            "last_name": "Bashirian",
+            "gender": "male",
+            "dob": "2011-05-26",
+            "email": "oda45@example.org",
+            "phone": "+1 (371) 296-0299",
+            "website": "http://www.satterfield.org/numquam-sit-reiciendis-illum-odit-quas-optio",
+            "address": "6572 Marc Mills Suite 607\nBethbury, ND 09590",
+            "status": "inactive",
+            "_links": {
+                "self": {
+                    "href": "https://gorest.co.in/public-api/users/1"
+                },
+                "edit": {
+                    "href": "https://gorest.co.in/public-api/users/1"
+                },
+                "avatar": {
+                    "href": "https://lorempixel.com/250/250/people/?72063"
+                }
             }
-        }
-    },
+        },
         {
             "id": "2",
             "first_name": "Layla",
@@ -469,24 +470,27 @@ class SampleStore extends Store {
                     "href": "https://lorempixel.com/250/250/people/?43097"
                 }
             }
-        }]
+        }
+    ]
 
-    @action addTodo(opts) {
+    @action addData(opts) {
         return new Promise((resolve) => {
-            if (opts.Id == 0) {
+            if(opts.Id == 0)
+            {
                 const data = {
                     id: uuid(),
-                    first_name: opts.First_name,
+                    first_name:opts.First_name,
                     last_name: opts.Last_name,
                     phone: opts.Phone,
                     gender: opts.Gender,
                     email: opts.Email,
                     status: opts.Status
                 };
-                this.listTodo.push(data);
+                this.listData.push(data);
                 resolve(data.id);
-            } else {
-                const todo = this.listTodo.find(t => t.id == opts.Id);
+            }
+            else{
+                const todo = this.listData.find(t => t.id == opts.Id);
                 todo.first_name = opts.First_name;
                 todo.last_name = opts.Last_name;
                 todo.phone = opts.Phone;
@@ -498,71 +502,22 @@ class SampleStore extends Store {
         });
     }
 
-    @action getTodoDetail(id) {
+    @action getTodoDetailData(id) {
         return new Promise((resolve) => {
-            const todo = this.listTodo.find(t => t.id == id);
+            const todo = this.listData.find(t => t.id == id);
             resolve(todo);
         });
     }
 
-    @action removeTodo(id) {
+    @action removeData(id) {
         return new Promise((resolve) => {
-            const idx = this.listTodo.findIndex(t => t.id == id);
+            const idx = this.listData.findIndex(t => t.id == id);
             if (idx !== -1) {
-                this.listTodo.splice(idx, 1);
+                this.listData.splice(idx, 1);
             }
             resolve('Done')
         })
     }
-
-    @action callServiceApi(pageId) {
-        return new Promise((resolve) => {
-            if (pageId == null) {
-                pageId = 1;
-            }
-            axios.request({
-                url: 'https://gorest.co.in/public-api/users?page=' + pageId,
-                method: 'get',
-                headers: {'Authorization': 'Bearer v75N3W4fG2C9uIvXWwL4A6M0s-hHcWNMi4mj'}
-            }).then(function (response) {
-                resolve(response);
-            })
-                .catch(function (error) {
-                    resolve(error);
-                });
-        });
-    }
-
-    @action callServiceApiAdd(opts) {
-        return new Promise((resolve) => {
-            if (opts.Id == 0) {
-                axios.request({
-                    url: 'https://gorest.co.in/public-api/users',
-                    method: 'post',
-                    data: opts,
-                    headers: {'Authorization': 'Bearer v75N3W4fG2C9uIvXWwL4A6M0s-hHcWNMi4mj'}
-                }).then(function (response) {
-                    const data = {
-                        id: uuid(),
-                        first_name:opts.First_name,
-                        last_name: opts.Last_name,
-                        phone: opts.Phone,
-                        gender: opts.Gender,
-                        email: opts.Email,
-                        status: opts.Status
-                    };
-                    this.listTodo.push(data);
-                    resolve(response);
-                })
-                    .catch(function (error) {
-                        resolve(error);
-                    });
-            }
-
-
-        });
-    }
-
 }
 
-export default SampleStore;
+export default UserService;

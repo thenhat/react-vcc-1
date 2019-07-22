@@ -36,14 +36,6 @@ class Baimoi extends Component {
 
     }
 
-    componentWillMount() {
-        const { store } = this.props;
-
-        store.getUsers();
-        var ff=store.getUsers;
-        console.log(ff)
-    }
-
     addTodo = () => {
         const {store} = this.props;
         const {First_name, Last_name, Gender, Phone, Email, Status, Id} = this.state;
@@ -196,7 +188,6 @@ class Baimoi extends Component {
                         bgColor={'#2c8d3a'}
                         textColor={'#fff'}
                         onClick={() => {
-                            this.componentWillMount()
                         }}>
                         <p>New User</p>
                     </Button>

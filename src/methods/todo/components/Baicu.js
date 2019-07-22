@@ -12,12 +12,14 @@ import SelectBox from "coreplugin/core/ui/selectbox";
 import Paging from "coreplugin/core/ui/paging/PagingSimple";
 import {Radio} from "coreplugin/core/ui/radio";
 import {isEmpty} from 'coreplugin/core/utils/validator';
+import Loading from "coreplugin/core/ui/loading";
 
 @inject('store')
 @observer
 class Baicu extends Component {
     constructor(props) {
         super(props);
+        const {store} = this.props;
         this.state = {
             Id: 0,
             Name: '',
@@ -29,36 +31,67 @@ class Baicu extends Component {
             isValidate: true,
             isChecked1: false,
             isChecked2: false,
-            errors: {}
-        };
+            errors: {},
+            isLoading:false,
+            message:'',
+            First_name: '',
+            Last_name: '',
+            Phone: '',
+            Gender: ''
 
+        };
+        this.getDataPaging(1);
     }
 
     addTodo = () => {
         const {store} = this.props;
-        const {Name, Age, Gtinh, Email, Status, Id} = this.state;
+        const {First_name, Last_name, Gender, Phone, Email, Status, Id} = this.state;
+        var that =this;
+
         if (this.handleValidation()) {
-            store.addTodo({
-                Name,
-                Age,
-                Gtinh,
+            store.callServiceApiAdd({
+                First_name,
+                Last_name,
+                Gender,
+                Phone,
                 Email,
                 Status,
                 Id
             })
-                .then(() => {
-                    this.setState({
-                        Id: 0,
-                        Name: '',
-                        Age: null,
-                        Gtinh: '',
-                        Email: '',
-                        isValidate: true,
-                        errors: {},
-                        Status: '',
-                        isChecked1: false,
-                        isChecked2: false
-                    });
+
+                .then((response) => {
+                    console.log(response)
+                    if(response.data._meta.status)
+                    {
+                        that.setState({
+                            Id: 0,
+                            Name: '',
+                            Age: null,
+                            Gtinh: '',
+                            Email: '',
+                            Status: '',
+                            dialogVisible: false,
+                            isValidate: true,
+                            isChecked1: false,
+                            isChecked2: false,
+                            errors: {},
+                            isLoading:false,
+                            message:'',
+                            First_name: '',
+                            Last_name: '',
+                            Phone: '',
+                            Gender: ''
+                        });
+
+                    }
+                    else
+                    {
+                        that.setState({
+                            message: response.data._meta.message
+                        });
+                        this.getDataPaging(1);
+                    }
+
                 });
         }
     };
@@ -70,9 +103,10 @@ class Baicu extends Component {
         detail.then(function (p) {
             that.setState({
                 dialogVisible: true,
-                Name: p.name,
-                Age: p.age,
-                Gtinh: p.gtinh,
+                First_name: p.first_name,
+                Last_name: p.last_name,
+                Phone: p.phone,
+                Gender: p.gender,
                 Email: p.email,
                 Status: p.status,
                 Id: p.id
@@ -90,14 +124,15 @@ class Baicu extends Component {
     handleValidation = () => {
         let errors = {};
         let isValidated = true;
-        if (isEmpty(this.state.Name)) {
-            errors["Name"] = "Cannot be empty";
+        if (isEmpty(this.state.First_name)) {
+            errors["First_name"] = "Cannot be empty";
+        }
+        if (isEmpty(this.state.Last_name)) {
+            errors["Last_name"] = "Cannot be empty";
         }
 
-        if (isEmpty(this.state.Age)) {
-            errors["Age"] = "Cannot be empty";
-        } else if (isNaN(this.state.Age)) {
-            errors["Age"] = "Please input number";
+        if (isEmpty(this.state.Phone)) {
+            errors["Phone"] = "Cannot be empty";
         }
 
         if (isEmpty(this.state.Email)) {
@@ -117,7 +152,7 @@ class Baicu extends Component {
     getChecked = () => {
         var p = this.state.Status;
 
-        if (p == 'Active') {
+        if (p == 'active') {
             this.setState({isChecked1: true, isChecked2: false})
         } else {
             this.setState({isChecked1: false, isChecked2: true})
@@ -126,23 +161,43 @@ class Baicu extends Component {
 
     };
 
+    getDataPaging= (pageId) => {
+        this.setState({isLoading:true});
+        const {store} = this.props;
+        var that = this;
+        store.callServiceApi(pageId).then(function (p) {
+            store.listTodo = p.data.result;
+
+            that.setState({
+                totalCount: p.data._meta.totalCount,
+                pageCount: p.data._meta.pageCount,
+                perPage: p.data._meta.perPage,
+                currentPage: p.data._meta.currentPage,
+                isLoading:false
+            });
+        });
+    };
+
     getValid =(e)=> {
         let errors = {};
         let isValidated = true;
         var fieldName =e;
 
         switch (fieldName) {
-            case "Name":
-                if (isEmpty(this.state.Name)) {
-                    errors["Name"] = "Cannot be empty";
+            case "First_name":
+                if (isEmpty(this.state.First_name)) {
+                    errors["First_name"] = "Cannot be empty";
+                }
+                break;
+            case "Last_name":
+                if (isEmpty(this.state.Last_name)) {
+                    errors["Last_name"] = "Cannot be empty";
                 }
                 break;
 
-            case "Age":
-                if (isEmpty(this.state.Age)) {
-                    errors["Age"] = "Cannot be empty";
-                } else if (isNaN(this.state.Age)) {
-                    errors["Age"] = "Please input number";
+            case "Phone":
+                if (isEmpty(this.state.Phone)) {
+                    errors["Phone"] = "Cannot be empty";
                 }
                 break;
 
@@ -191,47 +246,42 @@ class Baicu extends Component {
                     <table>
                         <thead>
                         <tr>
-                            <th>STT</th>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Gender</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th styleName="color-text">ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th styleName="color-text">Gender</th>
+                            <th styleName="color-text">Email</th>
+                            <th styleName="color-text">Phone</th>
+                            <th styleName="color-text">Status</th>
+                            <th styleName="color-text">Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         {
                             store.listTodo.map((todo, index) => (
                                 <tr styleName="todo-item" key={todo.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{todo.name}</td>
-                                    <td>{todo.age}</td>
-                                    <td>{todo.gtinh}</td>
-                                    <td>{todo.email}</td>
+                                    <td>{todo.id}</td>
+                                    <td>{todo.first_name}</td>
+                                    <td>{todo.last_name}</td>
+                                    <td>{todo.gender}</td>
+                                    <td styleName="color-text">{todo.email}</td>
+                                    <td styleName="color-phone">{todo.phone}</td>
                                     <td>{todo.status}</td>
-                                    <td>
-                                        <Button
-                                            width={70}
-                                            height={30}
-                                            bgColor={'#f0ad4e'}
-                                            textColor={'#fff'}
-                                            onClick={() => this.showPopupEdit(todo.id)}>
-                                            <FontAwesome
-                                                icon="fa fa-pencil"/>
-                                            Edit
-                                        </Button>
-
-                                        <Button
-                                            width={70}
-                                            height={30}
-                                            bgColor={'#d9534f'}
-                                            textColor={'#fff'}
-                                            onClick={() => this.removeTodo(todo.id)}>
-                                            <FontAwesome
-                                                icon="fa fa-trash"/>
-                                            Delete
-                                        </Button>
+                                    <td styleName="color-text">
+                                        <FontAwesome
+                                            icon="fa fa-eye"
+                                            color={'#e95420'}
+                                            onClick={() => this.showPopupEdit(todo.id)}
+                                        />
+                                        <FontAwesome
+                                            icon="fa fa-pencil"
+                                            color={'#e95420'}
+                                            onClick={() => this.showPopupEdit(todo.id)}
+                                        />
+                                        <FontAwesome
+                                            icon="fa fa-trash"
+                                            color={'#e95420'}
+                                            onClick={() => this.removeTodo(todo.id)}/>
                                     </td>
                                 </tr>
                             ))
@@ -239,60 +289,74 @@ class Baicu extends Component {
                         </tbody>
                     </table>
 
-                    <Paging total={store.listTodo.length} page={1} size={5}/>
+                    <Paging total={this.state.totalCount} page={this.state.currentPage} size={this.state.perPage} onChange={(pageNew) => this.getDataPaging(pageNew)}/>
+                    <Loading visible={this.state.isLoading}  />
                     <Dialog
                         visible={this.state.dialogVisible}
                         onClose={() => {
                             this.setState({
                                 Id: 0,
-                                Name: '',
-                                Age: null,
-                                Gtinh: '',
+                                First_name: '',
+                                Last_name: '',
+                                Phone: '',
+                                Gender: '',
                                 Email: '',
-                                isValidate: true,
-                                errors: {},
                                 Status: '',
+                                dialogVisible: false,
+                                isValidate: true,
                                 isChecked1: false,
                                 isChecked2: false,
-                                dialogVisible: false})
+                                errors: {}})
                         }}>
 
                         <div>
-                            <label><strong>Name</strong></label>
+                            {this.state.message}
+                            <label><strong>First_name</strong></label>
                             <Input
-                                value={this.state.Name}
+                                value={this.state.First_name}
                                 height={40}
-                                placeholder={'Add Name...'}
-                                onChange={(value) => this.setState({Name: value},
-                                    () => this.getValid('Name'))}
+                                placeholder={'Add First Name...'}
+                                onChange={(value) => this.setState({First_name: value},
+                                    () => this.getValid('First_name'))}
                             />
-                            <span styleName="error">{this.state.errors["Name"]}</span>
+                            <span styleName="error">{this.state.errors["First_name"]}</span>
                             <input type="hidden" value={this.state.Id}/>
 
-                            <label><strong>Age</strong></label>
+                            <label><strong>Last_name</strong></label>
                             <Input
-                                value={this.state.Age}
+                                value={this.state.Last_name}
                                 height={40}
-                                placeholder={'Add Age...'}
-                                onChange={(value) => this.setState({Age: value},
-                                    () => this.getValid('Age'))}
+                                placeholder={'Add Last Name...'}
+                                onChange={(value) => this.setState({Last_name: value},
+                                    () => this.getValid('Last_name'))}
                             />
-                            <span styleName="error">{this.state.errors["Age"]}</span>
+                            <span styleName="error">{this.state.errors["Last_name"]}</span>
+                            <input type="hidden" value={this.state.Id}/>
+
+                            <label><strong>Phone</strong></label>
+                            <Input
+                                value={this.state.Phone}
+                                height={40}
+                                placeholder={'Add Phone...'}
+                                onChange={(value) => this.setState({Phone: value},
+                                    () => this.getValid('Phone'))}
+                            />
+                            <span styleName="error">{this.state.errors["Phone"]}</span>
 
                             <label><strong>Gioi Tinh</strong></label>
                             <SelectBox
                                 data={[
                                     {
-                                        value: 'Male', label: 'Male', parent: 0,
+                                        value: 'male', label: 'male', parent: 0,
                                     }
                                     , {
-                                        value: 'Female', label: 'Female', parent: 0
+                                        value: 'female', label: 'female', parent: 0
                                     }, {
-                                        value: 'Other', label: 'Other', parent: 0
+                                        value: 'other', label: 'other', parent: 0
                                     }
                                 ]}
-                                onChange={(data) => this.setState({Gtinh: data})}
-                                value={this.state.Gtinh}
+                                onChange={(data) => this.setState({Gender: data})}
+                                value={this.state.Gender}
                             />
 
                             <label><strong>Email</strong></label>
@@ -309,15 +373,15 @@ class Baicu extends Component {
                             <label><strong>Status</strong></label>
                             <Radio
                                 checked={this.state.isChecked1}
-                                value={'Active'}
+                                value={'active'}
                                 onChange={(value) => this.setState({Status: value},
-                                    () => this.getChecked(),()=>this.getValid('Status'))}>
+                                    () => this.getChecked(), () => this.getValid('Status'))}>
                                 Active</Radio>
                             <Radio
                                 checked={this.state.isChecked2}
-                                value={'Inactive'}
+                                value={'inactive'}
                                 onChange={(value) => this.setState({Status: value},
-                                    () => this.getChecked(),()=>this.getValid('Status'))}>
+                                    () => this.getChecked(), () => this.getValid('Status'))}>
                                 Inactive
                             </Radio>
 
