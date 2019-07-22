@@ -54,6 +54,9 @@
 			height: auto !important;
 			top:200px !important;
 			.dialog-main{
+				.message{
+					color: #0080e8;
+				}
 				padding: 20px;
 				.ui-input,.selectbox-input{
 					margin-bottom: 15px;
@@ -77,6 +80,7 @@
 					}
 				}
 			}
+
 		}
 		.clear{
 			clear: both;
@@ -84,4 +88,9 @@
 
 	}
 	.main-route-place{}
+	.Loading{
+		position: fixed;
+		top: 48%;
+		left: 50%;
+	}
 }

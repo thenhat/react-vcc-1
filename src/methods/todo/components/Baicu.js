@@ -91,7 +91,6 @@ class Baicu extends Component {
                         });
                         this.getDataPaging(1);
                     }
-
                 });
         }
     };
@@ -290,7 +289,7 @@ class Baicu extends Component {
                     </table>
 
                     <Paging total={this.state.totalCount} page={this.state.currentPage} size={this.state.perPage} onChange={(pageNew) => this.getDataPaging(pageNew)}/>
-                    <Loading visible={this.state.isLoading}  />
+                    <div styleName="Loading"> <Loading visible={this.state.isLoading}  /></div>
                     <Dialog
                         visible={this.state.dialogVisible}
                         onClose={() => {
@@ -306,11 +305,13 @@ class Baicu extends Component {
                                 isValidate: true,
                                 isChecked1: false,
                                 isChecked2: false,
-                                errors: {}})
+                                errors: {},
+                                message:''
+                            })
                         }}>
 
                         <div>
-                            {this.state.message}
+                            <p styleName="message">{this.state.message}</p>
                             <label><strong>First_name</strong></label>
                             <Input
                                 value={this.state.First_name}
@@ -351,8 +352,6 @@ class Baicu extends Component {
                                     }
                                     , {
                                         value: 'female', label: 'female', parent: 0
-                                    }, {
-                                        value: 'other', label: 'other', parent: 0
                                     }
                                 ]}
                                 onChange={(data) => this.setState({Gender: data})}
