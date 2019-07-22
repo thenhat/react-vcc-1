@@ -1,6 +1,8 @@
 import Store from './src/store';
 
 import todo from './src/methods/todo';
+import todo2 from './src/methods/todo2';
+import UserService from "./src/store/userService";
 
 export default {
 	props: {
@@ -20,12 +22,11 @@ export default {
 		}
 	},
 	methods: {
-		todo
+		todo,todo2
 	},
 	load() {
 		return new Promise((resolve, reject) => {
 			const store = new Store(this.props);
-
 			resolve(store);
 		});
 	}

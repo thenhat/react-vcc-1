@@ -12,12 +12,14 @@ import SelectBox from "coreplugin/core/ui/selectbox";
 import Paging from "coreplugin/core/ui/paging/PagingSimple";
 import {Radio} from "coreplugin/core/ui/radio";
 import {isEmpty} from 'coreplugin/core/utils/validator';
+import Loading from "coreplugin/core/ui/loading";
 
 @inject('store')
 @observer
 class Baicu extends Component {
     constructor(props) {
         super(props);
+        const {store} = this.props;
         this.state = {
             Id: 0,
             Name: '',
@@ -29,16 +31,19 @@ class Baicu extends Component {
             isValidate: true,
             isChecked1: false,
             isChecked2: false,
-            errors: {}
+            errors: {},
+            isLoading:false,
+            message:""
         };
-
+        this.getDataPaging(1);
     }
 
     addTodo = () => {
         const {store} = this.props;
         const {Name, Age, Gtinh, Email, Status, Id} = this.state;
+
         if (this.handleValidation()) {
-            store.addTodo({
+            store.callServiceApiAdd({
                 Name,
                 Age,
                 Gtinh,
@@ -46,19 +51,31 @@ class Baicu extends Component {
                 Status,
                 Id
             })
-                .then(() => {
-                    this.setState({
-                        Id: 0,
-                        Name: '',
-                        Age: null,
-                        Gtinh: '',
-                        Email: '',
-                        isValidate: true,
-                        errors: {},
-                        Status: '',
-                        isChecked1: false,
-                        isChecked2: false
-                    });
+                .then((response) => {
+                    if(response.data._meta.status)
+                    {
+                        that.setState({
+                            Id: 0,
+                            Name: '',
+                            Age: null,
+                            Gtinh: '',
+                            Email: '',
+                            isValidate: true,
+                            errors: {},
+                            Status: '',
+                            isChecked1: false,
+                            isChecked2: false
+                        });
+
+                    }
+                    else
+                    {
+                        that.setState({
+                            message: response.data._meta.message
+                        });
+                        this.getDataPaging(1);
+                    }
+
                 });
         }
     };
@@ -124,6 +141,23 @@ class Baicu extends Component {
         }
 
 
+    };
+
+    getDataPaging= (pageId) => {
+        this.setState({isLoading:true});
+        const {store} = this.props;
+        //var that = this;
+        store.callServiceApi(pageId).then(function (p) {
+            console.log(p.data);
+            store.listTodo = p.data.result;
+            Baicu.setState({
+                totalCount: p.data._meta.totalCount,
+                pageCount: p.data._meta.pageCount,
+                perPage: p.data._meta.perPage,
+                currentPage: p.data._meta.currentPage,
+                isLoading:false
+            });
+        });
     };
 
     getValid =(e)=> {
@@ -205,9 +239,9 @@ class Baicu extends Component {
                             store.listTodo.map((todo, index) => (
                                 <tr styleName="todo-item" key={todo.id}>
                                     <td>{index + 1}</td>
-                                    <td>{todo.name}</td>
-                                    <td>{todo.age}</td>
-                                    <td>{todo.gtinh}</td>
+                                    <td>{todo.first_name}</td>
+                                    <td>{todo.last_name}</td>
+                                    <td>{todo.gender}</td>
                                     <td>{todo.email}</td>
                                     <td>{todo.status}</td>
                                     <td>
@@ -239,7 +273,8 @@ class Baicu extends Component {
                         </tbody>
                     </table>
 
-                    <Paging total={store.listTodo.length} page={1} size={5}/>
+                    <Paging total={this.state.totalCount} page={this.state.currentPage} size={this.state.perPage} onChange={(pageNew) => this.getDataPaging(pageNew)}/>
+                    <Loading visible={this.state.isLoading}  />
                     <Dialog
                         visible={this.state.dialogVisible}
                         onClose={() => {
@@ -258,6 +293,7 @@ class Baicu extends Component {
                         }}>
 
                         <div>
+                            {this.state.message}
                             <label><strong>Name</strong></label>
                             <Input
                                 value={this.state.Name}

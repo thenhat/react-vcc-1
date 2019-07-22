@@ -8,7 +8,6 @@ import Baimoi from "./Baimoi";
 @observer
 class View extends Component {
     render() {
-        const {store} = this.props;
         const {Baimoi} = this.props;
         return (
             <div styleName="todo-wrapper">
