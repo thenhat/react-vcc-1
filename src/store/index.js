@@ -119,6 +119,23 @@ class SampleStore extends Store {
         });
     }
 
+    @action callChartApi() {
+        return new Promise((resolve) => {
+            axios.request({
+                url: 'https://api.myjson.com/bins/wrydz',
+                method: 'get',
+            }).then(function (response) {
+                console.log(response)
+                resolve(response);
+            })
+                .catch(function (error) {
+                    resolve(error);
+                });
+        });
+    }
+
 }
+
+
 
 export default SampleStore;

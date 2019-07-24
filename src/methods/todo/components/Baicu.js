@@ -13,7 +13,138 @@ import Paging from "coreplugin/core/ui/paging/PagingSimple";
 import {Radio} from "coreplugin/core/ui/radio";
 import {isEmpty} from 'coreplugin/core/utils/validator';
 import Loading from "coreplugin/core/ui/loading";
+import {Line,Doughnut,Pie,chart,Bar,Bubble,HorizontalBar} from 'coreplugin/core/ui/chart';
 
+const data6 = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+        {
+            label: 'My First dataset',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+            data: [65, 59, 80, 81, 56, 55, 40]
+        }
+    ]
+};
+
+const data2 = {
+    labels: [
+        'Red',
+        'Green',
+        'Yellow'
+    ],
+    datasets: [{
+        data: [300, 50, 130],
+        backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ],
+        hoverBackgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ]
+    }]
+};
+
+const data3 = {
+    labels: [
+        'Red',
+        'Green',
+        'Yellow'
+    ],
+    datasets: [{
+        data: [300, 50, 100],
+        backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ],
+        hoverBackgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ]
+    }]
+};
+
+const data4 = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [
+        {
+            label: 'My First dataset',
+            backgroundColor: 'rgba(255,99,132,0.2)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+            data: [65, 59, 80, 81, 56, 55, 40]
+        }
+    ]
+};
+let data ={};
+
+const data5 = {
+    labels: ['January'],
+    datasets: [
+        {
+            label: 'My First dataset',
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(75,192,192,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [{x:10,y:20,r:5}]
+        }
+    ]
+};
+
+const data7 = {
+    labels: [
+        'Red',
+        'Green',
+        'Yellow'
+    ],
+    datasets: [{
+        data: [300, 50, 100],
+        backgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ],
+        hoverBackgroundColor: [
+            '#FF6384',
+            '#36A2EB',
+            '#FFCE56'
+        ]
+    }]
+};
+
+const legendOpts = {
+    display: true,
+    position: 'top',
+    fullWidth: true,
+    reverse: false,
+    labels: {
+        fontColor: 'rgb(255, 99, 132)'
+    }
+};
 @inject('store')
 @observer
 class Baicu extends Component {
@@ -37,11 +168,37 @@ class Baicu extends Component {
             First_name: '',
             Last_name: '',
             Phone: '',
-            Gender: ''
+            Gender: '',
+            displayName: 'LineExample',
 
         };
+        this.getData();
+
         this.getDataPaging(1);
     }
+
+
+    getInitialState() {
+        return {
+            legend: legendOpts
+        }
+    }
+
+    applyLegendSettings() {
+        const { value } = this.legendOptsInput;
+
+        try {
+            const opts = JSON.parse(value);
+            this.setState({
+                legend: opts
+            });
+        } catch(e) {
+            alert(e.message);
+            throw Error(e);
+        }
+    }
+
+
 
     addTodo = () => {
         const {store} = this.props;
@@ -215,6 +372,59 @@ class Baicu extends Component {
         }
 
         this.setState({errors: errors});
+    };
+
+    getData =() =>{
+        const {store} = this.props;
+        var chartX = [];
+        var chartY = [];
+
+        store.callChartApi().then(function (x) {
+            var x1;
+            var y1;
+            for (var i = 0; i < x.data.length; i++) {
+                x1 = new Date(x.data[i].session_date).getTime();
+                x.data[i].session_date =x1;
+            }
+            x.data.sort(function(a, b){return a.session_date - b.session_date});
+
+            for (var i = 0; i < x.data.length; i++) {
+                x1 = new Date(x.data[i].session_date).toLocaleDateString();
+                y1 = Number(x.data[i].score);
+                chartX.push(x1);
+                chartY.push(y1)
+            }
+            console.log(chartX);
+            console.log(chartY)
+
+            data = {
+                labels: chartX,
+                datasets: [
+                    {
+                        label: 'My First dataset',
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: 'rgba(75,192,192,0.4)',
+                        borderColor: 'rgba(75,192,192,1)',
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: 'rgba(75,192,192,1)',
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+                        pointHoverBorderColor: 'rgba(220,220,220,1)',
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: chartY
+                    }
+                ]
+            };
+
+        });
     };
 
     render() {
@@ -396,6 +606,55 @@ class Baicu extends Component {
                             </Button>
                         </div>
                     </Dialog>
+                    <div>
+                        <h2>Line Example</h2>
+                        <Line data={data} />
+                    </div>
+
+                    <div>
+
+                        <h2>Line Example</h2>
+
+                        <Line data={data2} />
+
+                    </div>
+
+                    <div>
+
+                        <h2>Line Example</h2>
+
+                        <Line data={data3} />
+
+                    </div>
+                    <div>
+                        <h2>Bar Example (custom size)</h2>
+                        <Bar
+                            data={data4}
+                            width={100}
+                            height={50}
+                            options={{
+                                maintainAspectRatio: false
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <h2>Bubble Example</h2>
+                        <Bubble data={data5} />
+                    </div>
+
+                    <div>
+                        <h2>Horizontal Bar Example</h2>
+                        <HorizontalBar data={data6} />
+                    </div>
+
+                    <div>
+                        <h2>Legend Options Example</h2>
+                        <div>
+                            <button onClick={this.applyLegendSettings}>Apply legend settings</button>
+                        </div>
+                        <Pie data={data7} legend={this.state.legend} redraw />
+                    </div>
                 </div>
             </div>
         )
